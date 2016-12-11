@@ -1,0 +1,278 @@
+/* MYSQL QUERIES */
+
+* Installation:
+----------------
+ sudo apt-get update
+ sudo apt-get install mysql-server-5.6
+
+* What is Database?
+----------------------
+ A database is a separate application that stores a collection of data.Each databse has one or more distinct APIs for
+creating,accessing,managing,searching and replicating the data it holds.
+
+Other kinds of data stores can be used,such as files on the file system or large hash tables in memory,but data fetching and writing
+would not be so fast and easy with those types of systems.
+
+So nowadays,we use relational database management systems(RDBMS) to store and manage huge volume of data.This is called 
+relational database because all the data stored is stored into different tables and relations are established using primary 
+keys or other keys known as foreign keys.
+
+A Relational Database Management System(RDMS) is a software that:
+
+Enables you to implement a database with tables,columns and indexes.
+Guarantees the Referential Integrity between rows of various tables.
+Updates the indexes automatically.
+Interprets an SQL query and combines information from various tables.
+
+* RDBMS Terminology:
+---------------------
+Database: A database is a collection of tables,with related data.
+Table: A table is a matrix with data. A table in a database looks like a simple spreadsheet.
+Column: One column(data element) contains data of one and the same kind,for example the column postcode.
+Row: A row (=tuple,entry or record) is a group of related data,for example the data of one subscription.
+Redundancy: Storing data twice,redundantly to make the system faster.
+Primary Key: A primary key is unique. A key value can not occur twice in one table. With a key,you can find at most one row.
+Foreign Key: A foreign key is the linking pin between two tables.
+
+* SQL Aggregate Functions:
+---------------------------
+# AVG()-Returns the average value
+----------------------------------
+1. select avg(column_name)from table_name;
+2. select avg(price)as priceaverage from products;
+3. select productname,price from products where price>(select avg(price) from products);
+
+# COUNT()-Returns the number of rows
+-------------------------------------
+1. select count(*) from table_name;
+2. select count(distinct columnname) from tablename;
+3. select count(customerid)as ordersfromcustomerid7 from orders where customerid=7;
+4. select count(*) as numberoforders from orders;
+5. select count(distinct customerid) as numberofcustomers from orders;
+
+# FIRST()-Returns the first value
+----------------------------------
+1. select top 1 customername from customers order by customerid asc;
+2. select customername from customers order by customerid asc limit 1;
+3. select first(customername) as firstcustomer from customers;
+
+# LAST()-Returns the last value
+--------------------------------
+1. select top 1 customername from customers order by customerid desc;
+
+# MAX()-Returns the largest value
+----------------------------------
+1. select max(columnname) from tablename;
+2. select max(price) as highestorderprice from products;
+
+# MIN()-Returns the smallest value
+------------------------------------
+1. select min(columnname) from tablename;
+2. select min(price) as smallestorderprice from products;
+
+# SUM()-Returns the sum
+----------------------------------
+1. select sum(columnname) from tablename;
+2. select sum(quantity) as totalitemsordered from orderdetails;
+
+
+* Queries:
+-----------
+>lsb_release -a
+>mysql -u root -p
+>show databases;
+>create database database_name;
+>show tables;
+>describe table_name; desc table_name;
+>insert into table_name values();
+>select database();-present working database
+>update clause-update tablename set field1=new.value1, field2=new.value2 [where clause]
+>delete from tablename[where clause]
+>like clause-select * from salespeople where sname like "p%";
+>select * from salespeople order by sname;
+>select version();-show current version
+>select * from customer into outfile 'customer.txt' fields terminated by ',';-to store the data into a file
+>select @@datadir;-to find the default location of mysql
+ /var/lib/mysql
+ cd /var/lib/mysql
+ ls
+ sudo ls -l retail
+>sudo cat filename-to view the contents in a file
+>select * from salespeople where substring(sname,1,1)='P';
+>select curdate() as todays_date;
+>select day(curdate());
+>select month(curdate());
+>select year(curdate());
+>select now();
+>select dayname(curdate());
+>select monthname(curdate());
+>select sqrt(100) as result;-to find square root
+>select concat(cname,city) from customer;-to concat 2 values
+>select power(2,3);-to find power of a no
+>select mod(29,3);-to find the remainder
+>select least(1,1,2,3) as min;-to find the least no in an array
+>select greatest(1,1,2,3) as max;-to find the largest no in an array
+>select ucase('sandeep');-convert to uppercase
+>select lcase('SANDEEP');-convert to lowercase
+
+
+
+>create table if not exists salespeople(
+ snum int not null,
+ sname varchar(30) not null,
+ city varchar(30) not null,
+ comm decimal(4,2) not null,
+ primary key (snum)
+ );
+>insert into salespeople values(1001,'Peel','London',0.12);
+ insert into salespeople values(1004,'Motika','London',0.11);
+ insert into salespeople values(1007,'Rifkin','Barcelona',0.15);
+ insert into salespeople values(1003,'AxelRod','New York',0.10);
+ insert into salespeople values(1002,'Serres','San Jose',0.13);
+>select * from salespeople;
+>create table if not exists customer(
+ cnum int not null,
+ cname varchar(30) not null,
+ city varchar(30) not null,
+ rating int not null,
+ snum int not null,
+ primary key (cnum),
+ foreign key (snum) references salespeople(snum)
+ );
+>insert into customer values(2001,'Hoffman','London',100,1001);
+ insert into customer values(2002,'Giovanni','Rome',200,1003);
+ insert into customer values(2003,'Liu','San Jose',200,1002);
+ insert into customer values(2004,'Grass','Berlin',300,1002);
+ insert into customer values(2006,'Clemens','London',100,1001);
+>select a.cname,b.sname from customer a,salespeople b where a.snum=b.snum;
+>select * from customer;
+>select * from customer order by city;
+>select * from customer where city='London';
+>select cname,city,rating from cutomer where city='Rome';
+>select cname,max(rating) from customer group by cname;
+>select max(rating) from customer;
+>select * from customer where rating=(select max(rating) from customer);
+>select customer.cnum,customer.cname,customer.city,customer.rating,salespeople.sname from customer,salespeople where
+ customer.snum=salespeople.snum; (or) select a.cnum,a.cname,a.city,a.rating,b.sname from customer a,salespeople b where
+ a.snum=b.snum;
+>select a.cnum,a.cname,a.city,a.rating,b.sname from customer a,salespeople b where a.snum=b.snum and b.sname='Peel';
+>select * from customer where city='London' or rating=100;
+>select * from customer where city='Rome' and snum=1003;
+>select * from customer group by snum;
+>select snum,count(*) from customer group by snum;
+>select a.snum,b.sname,count(*) as customer_count from customer a,salespeople b where a.snum=b.snum group by a.snum,b.sname;
+>select * from salespeople where city='London';
+>select * from salespeople where comm >=0.12 and comm <=0.15;
+>select * from salespeople where city='London' and comm >=0.12 and comm <=0.15;
+>select * from salespeople where city='London' or city='New york';
+>create table if not exists orders(
+ onum int not null,
+ amt decimal(7,2) not null,
+ odate date not null,
+ cnum int not null,
+ primary key (onum),
+ foreign key (cnum) references salespeople(cnum)
+ );
+>insert into orders values(3001,18.69,'1997-03-10',2008);
+ insert into orders values(3002,1900.10,'1996-03-10',2007);
+ insert into orders values(3003,767.19,'1996-03-10',2001);
+ insert into orders values(3005,5160.45,'1996-03-10',2003);
+ insert into orders values(3006,1098.16,'1996-03-10',2008);
+ insert into orders values(3007,75.75,'1996-04-10',2002);
+ insert into orders values(3009,1713.23,'1996-04-10',2002);
+ insert into orders values(3010,1309.95,'1996-06-10',2004);
+ insert into orders values(3011,9891.88,'1996-06-10',2006);
+ insert into orders values(3012,4000.00,'1996-06-10',2009);
+>delete from orders;
+>select a.onum,a.amt,a.odate,b.cname from orders a,customer b where a.cnum=b.cnum;
+>select * from orders;
+>select * from orders order by amt desc;
+>select a.onum,a.amt,a.odate,b.cname from orders a,customer b where a.cnum=b.cnum order by a.amt desc;
+>select cnum,sum(amt) from orders group by cnum;
+>select cnum,max(amt) from orders group by cnum;
+>select cnum,max(amt) from orders;
+>select sum(amt) from orders;
+>select cnum,sum(amt) as totalsales from orders group by cnum order by totalsales desc;
+>select cnum,sum(amt) as totalsales from orders group by cnum order by totalsales desc limit 1;
+>update customer set city='Rome' where cnum=2002;
+>select a.onum,a.amt,a.odate,b.cname from orders a left outer join customer b on a.cnum=b.cnum;
+>select a.onum,a.amt,a.odate,b.cname from orders a right outer join customer b on a.cnum=b.cnum;
+>select a.cname,a.city,b.sname from customer a right outer join salespeople b on a.snum=b.snum;
+>select cnum,sum(amt) as totalsales from orders group by cnum order by totalsales desc limit 1 into outfile 'top5.txt'
+ fields terminated by ',';
+>select a.onum,max(a.amt),a.odate,a.cnum,b.snum from orders a,customer b where a.cnum=b.cnum group by b.snum,a.odate;
+>select a.onum,a.amt,a.odate,a.cnum,b.snum from orders a,customer b where a.cnum=b.cnum group by b.snum;
+>select a.onum,a.amt,a.odate,a.cnum,b.snum from orders a,customer b where a.cnum=b.cnum;
+>select a.onum,a.amt,a.odate,a.cnum,b.snum,c.sname from orders a,customer b,salespeople c where a.cnum=b.cnum and b.snum=c.snum;
+>select distinct c.sname from orders a,customer b,salespeople c where a.cnum=b.cnum and b.snum=c.snum;
+>select a.cname,a.snum,b.sname from customer a,salespeople b where a.snum=b.snum;
+>select a.snum,b.sname,count(*) as cust_count from customer a,salespeople b where a.snum=b.snum group by a.snum;
+>select a.snum,b.sname,count(*) as cust_count from customer a,salespeople b,orders c where a.snum=b.snum and a.cnum=c.cnum group by a.snum;
+>select count(*) from customer where city='San Jose';
+>select * from customer where (select count(*) from customer where city='San Jose')>1;
+>select a.cname,a.city,b.sname from customer a,salespeople b where a.snum=b.snum and a.city=b.city;
+>select * from salespeople where substring(sname,2,1)='e';
+>select * from salespeople where substring(sname,2,2)='ee';
+>select * from salespeople where substring(sname,1,1)='P';
+>select curdate() as todays_date;
+>select day(curdate());
+>select month(curdate());
+>select year(curdate());
+>select now();
+>select dayname(curdate());
+>select monthname(curdate());
+>select sqrt(100);
+>select concat(cname,city) from customer;
+>select concat(cname,' ',city) as 'name and city' from customer;
+>select a.amt,a.cnum,b.cname,b.rating,b.snum,c.sname,c.comm,a.amt*c.comm from orders a,customer b,salespeople c where a.cnum=b.cnum and
+ b.snum=c.snum and b.rating>100;
+>select snum,count(*) as cust_count from customer group by snum having cust_count=1;
+>select a.sname,a.snum from salespeople a, (select snum,count(*) as cust_count from customer group by snum having cust_count=1) b where a.snum=b.snum);
+>select sum(c.comm*a.amt) from orders a,customer b,salespeople c where a.cnum=b.cnum and b.snum=c.snum;
+>select (select sum(amt) from orders)-(select sum(c.comm*a.amt) as 'Total Commission' fom orders a,customer b,salespeople c 
+ where a.cnum=b.cnum and b.snum=c.snum) as Gross_Profit;
+>select a.onum,a.amt,dayname(a.odate),a.cnum,b.cname from orders a,customer b where a.cnum=b.cnum and b.cname='Hoffman';
+>select count(distinct cnum) from orders;
+>select avg(amt) from orders;
+>select * from orders where amt>(select avg(amt) from orders);
+>select cnum,sum(amt) as totalspend from orders group by cnum order by totalspend;
+>select cnum,sum(amt) as totalspend from orders group by cnum order by totalspend limit 1;
+>select a.cnum,b.cname,sum(a.amt) as totalspend from orders a,customer b where a.cnum=b.cnum group by a.cnum order by totalspend limit 1;
+>select a.cnum,b.cname,sum(a.amt) as totalspend from orders a,customer b where a.cnum=b.cnum group by a.cnum order by totalspend desc limit 1;
+>select b.snum,sum(a.amt) as totalsalesbySP from orders a,customer b where a.cnum=b.cnum group by b.snum order by totalsalesbySP desc;
+>select b.snum,c.sname,sum(a.amt) as totalsalesbySP,sum(a.amt)*c.comm from orders a,customer b,salespeople c where a.cnum=b.cnum and 
+ b.snum=c.snum group by b.snum order by totalsalesbySP desc;
+>select b.snum,c.sname,sum(a.amt) as totalsalesbySP, (sum(a.amt)*100/(select sum(amt) from orders) as salesPercent from orders a,customer b,salespeople c 
+ where a.cnum=b.cnum and b.snum=c.snum group by b.snum order by totalsalesbySP desc;
+>select snum,sname,city,comm from salespeople where (comm > + 0.12 or comm < 0.14);
+>select snum,sname,city,comm from salespeople where (comm > 0.12 and comm < 0.14);
+>select a.cnum,b.cname,b.rating,sum(a.amt) as totalspend from orders a,customer b where a.cnum=b.cnum group by a.cnum order by totalspend;
+>select * from orders a,customer b where a.cnum=b.cnum and b.city='Rome' and b.city='London';
+>select sum(a.amt) from orders a,customer b where a.cnum=b.cnum and (b.city='Rome' and b.city='London');
+>select * from orders a,customer b where a.cnum=b.cnum and b.city='Rome' and (b.city='Rome' and b.city='London');
+>select b.snum,c.sname,sum(a.amt)*c.comm from orders a,customer b,salespeople c where a.cnum=b.cnum and b.snum=c.snum and
+ (c.city='London' and c.city='New York') group by b.snum;
+>select (select sum(a.amt)*c.comm as totalsales from orders a,customer b,salespeople c where a.cnum=b.cnum and b.snum=c.snum and
+ (c.city='London' and c.city='New York') as x, (select sum(a.amt) from orders a,customer b where a.cnum=b.cnum and 
+ (b.city='Rome' and b.city='London')) as y;
+>select (select sum(a.amt)*c.comm as totalsales from orders a,customer b,salespeople c where a.cnum=b.cnum and b.snum=c.snum and
+ (c.city='London' and c.city='New York')) as tot_sales, 
+ (select sum(a.amt) from orders a,customer b where a.cnum=b.cnum and (b.city='Rome' and b.city='London')) as tot_comm,
+ (select sum(a.amt) from orders a,customer b where a.cnum=b.cnum and (b.city='Rome' and b.city='London'))/
+ (select sum(a.amt)*c.comm as totalsales from orders a,customer b,salespeople c where a.cnum=b.cnum and b.snum=c.snum and
+ (c.city='London' and c.city='New York')) as division ;
+>select a.cname,b.cname from customer a,customer b where a.snum=b.snum;
+>select a.cname,b.cname,a.snum from customer a,customer b where a.snum=b.snum and a.cname!=b.cname;
+>select a.cname,b.cname,a.snum from customer a,customer b where a.snum=b.snum and a.cname!=b.cname and 
+ concat(a.cname,b.cname)!=concat(b.cname,a.cname);
+>select snum,count(*) from customer group by snum;
+>select snum,count(*) as cust_count from customer group by snum having cust_count>1;
+>update orders set odate='1996-10-03' where onum=3001;
+>select * from customer a,salespeople b where a.snum=b.snum and (b.sname='Peel' or b.sname='Motika');
+>select * from customer where snum=any (select 1010);
+>select * from customer where snum=any (select 1001);
+>select * from customer where snum=all (select snum from salespeople);
+>select * from customer where snum=all (select 1001);
+>select * from customer where exists ( select * from salespeople where snum=1001);
+>select * from customer where exists ( select * from salespeople where snum=1019);
+>select snum,count(*) as order_count from customer group by snum order by order_count desc;
